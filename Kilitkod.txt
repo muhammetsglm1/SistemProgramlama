@@ -1,0 +1,48 @@
+void kilitAgaciniOlustur(char *dosyaAdi, JRB kilitTree, JRB decKilitTree) {
+    IS is;
+    is = new_inputstruct(dosyaAdi);
+    int nsize, i, deger;
+    char *gelenKelime;
+    while (get_line(is) >= 0) {
+        if (is->NF > 1) {
+            nsize = strlen(is->fields[1]);
+            for (i = 1; i < is->NF - 1; i++) nsize += (strlen(is->fields[i]) + 1);
+
+            char *lineWithoutQuotes = (char *) malloc(sizeof(char) * (nsize + 1));
+            char *lineWithoutQuotes1 = (char *) malloc(sizeof(char) * (nsize + 1));
+            char *lineWithoutQuotes3 = (char *) malloc(sizeof(char) * (nsize + 1));
+            char *degerStr = (char *) malloc(sizeof(char) * (nsize + 1));
+            strcpy(lineWithoutQuotes, is->fields[is->NF - 1]);
+            int i, j;
+
+            for (i = j = 0; i < strlen(is->fields[is->NF - 1]); i++) {
+                if (lineWithoutQuotes[i] >= '0' && lineWithoutQuotes[i] <= '9'){
+                    lineWithoutQuotes1[j] = lineWithoutQuotes[i];
+                    lineWithoutQuotes3[j++] = lineWithoutQuotes[i];
+                }
+            }
+            strcpy(degerStr, lineWithoutQuotes3);
+            deger = atoi(lineWithoutQuotes1);
+//                  printf("lineWithoutQuotes3: %s\n", lineWithoutQuotes3);
+            //---------------------------------------------------------------------------
+
+            nsize = strlen(is->fields[0]);
+            for (i = 1; i < is->NF - 1; i++) nsize += (strlen(is->fields[i]) + 1);
+            gelenKelime = (char *) malloc(sizeof(char) * (nsize + 1));
+            strcpy(gelenKelime, is->fields[0]);
+            char *lineWithoutQuotes2 = (char *) malloc(sizeof(char) * (nsize + 1));
+            for (i = j = 0; i < nsize; i++) {
+                if (gelenKelime[i] >= 'a' && gelenKelime[i] <= 'z')
+                    lineWithoutQuotes2[j++] = gelenKelime[i];
+            }
+            strcpy(gelenKelime, lineWithoutQuotes2);
+
+            (void) jrb_insert_gen(kilitTree, new_jval_s(gelenKelime), new_jval_i(deger), revcomp);
+//            printf("Eklenen: %s -> %s\n", degerStr, gelenKelime);
+            (void) jrb_insert_gen(decKilitTree, new_jval_s(degerStr), new_jval_s(gelenKelime), revcomp);
+
+//            printf("Ekleme anahtar: %s deger: %d\n", gelenKelime, deger);
+//            printf("gelen 111: %s\n",getKelime("111",decKilitTree));
+        }
+    }
+}
